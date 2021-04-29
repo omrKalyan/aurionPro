@@ -1,11 +1,22 @@
 pipeline{
-    agent any
-    stages {
-    stage('build'){
-    steps{
-    sh 'mvn compile'
-    }
-    }
-    }
-    }
+	agent any
+	stages {
+	stage('unit test') {
+	steps{
+	sh 'ant -f test.xml -v'
+	junit 'reports/result.xml'
+	}
+	}
+	stage('build'){
+	steps{
+	sh 'ant -f build.xml -v'
+	}
+	}
+	}
+	post {
+    	always{
+        	archiveArtifacts artifacts: 'dist/*.jar', fingerprint: true
+    	}
+	}
+}
 
